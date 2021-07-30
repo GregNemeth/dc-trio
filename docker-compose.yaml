@@ -3,11 +3,37 @@ version: "3.8"
 services:
     dc-trio-db:
         container_name: dc-trio-db
-        build: ./db
+        build: db
         ports:
           - target: 3306
         volumes: 
-          - dc-trio-volume: /var/lib/mysql
+          - dc-trio-volume:/var/lib/mysql
+        environment: 
+            MYSQL_ROOT_PASSWORD:
+            MYSQL_DATABASE:
+        env_file: .env
+
+    dc-trio-flask:
+        container_name: dc-trio-flask
+        build: flask-app
+        ports:
+          - target: 5000
+        environment: 
+            MYSQL_ROOT_PASSWORD:
+            MYSQL_DATABASE:
+        env_file: .env
+        depends_on: 
+          - dc-trio-db
+
+    dc-trio-proxy:
+        image: nginx:alpine
+        ports: 
+          - target: 80
+            published: 80
+        volumes: 
+          - type: bind
+            source: ./nginx/nginx.conf
+            target: /etc/nginx/nginx.conf
 
 
 volumes: 
