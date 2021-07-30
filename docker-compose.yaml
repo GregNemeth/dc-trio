@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+    dc-trio-db:
+        container_name: dc-trio-db
+        build: ./db
+        ports:
+          - target: 3306
+        volumes: 
+          - dc-trio-volume: /var/lib/mysql
+
+
+volumes: 
+    dc-trio-volume:
